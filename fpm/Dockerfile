@@ -11,12 +11,13 @@ RUN apt-get update && apt-get install -y git \
     	libmcrypt-dev \
     	libpng12-dev \
     	imagemagick \
+    	&& rm -rf /var/lib/apt/lists/* \
 	&& docker-php-ext-install pdo \
 	&& docker-php-ext-install mbstring \
 	&& docker-php-ext-install pdo_mysql \
 	&& docker-php-ext-install mysqli \
 	&& docker-php-ext-install opcache \
-	&& docker-php-ext-install gd
+	&& docker-php-ext-install gd --with-png-dir=/usr --with-jpeg-dir=/usr
 
 RUN git clone https://github.com/websupport-sk/pecl-memcache.git \
 	&& cd pecl-memcache \
