@@ -1,9 +1,31 @@
-FROM php:5.6-fpm
+FROM php:fpm
 
-# install the PHP extensions we need
-RUN apt-get update && apt-get install -y libpng12-dev libjpeg-dev && rm -rf /var/lib/apt/lists/* \
-	&& docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
-	&& docker-php-ext-install gd mysqli opcache
+# install the PHP7 extensions we need
+RUN apt-get update && apt-get install -y git \
+	libmemcached-dev \
+	libmemcached11 \
+	wget \
+    	libmemcached-dev \
+    	libfreetype6-dev \
+    	libjpeg62-turbo-dev \
+    	libmcrypt-dev \
+    	libpng12-dev \
+    	imagemagick \
+	&& docker-php-ext-install pdo \
+	&& docker-php-ext-install mbstring \
+	&& docker-php-ext-install pdo_mysql \
+	&& docker-php-ext-install mysqli \
+	&& docker-php-ext-install opcache \
+	&& docker-php-ext-install gd
+
+RUN git clone https://github.com/websupport-sk/pecl-memcache.git \
+	&& cd pecl-memcache \
+	&& git checkout -b php7 origin/php7 \
+	&& phpize \
+	&& ./configure \
+	&& make \
+	&& make install \
+	&& docker-php-ext-enable memcache
 
 # set recommended PHP.ini settings
 # see https://secure.php.net/manual/en/opcache.installation.php
